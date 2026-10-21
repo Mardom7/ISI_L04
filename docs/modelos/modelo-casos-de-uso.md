@@ -223,21 +223,23 @@ Los apartados 6.1 y 6.2 corresponden a las descripciones detalladas de UC-05 y U
 
 ### 6.1 Descripción detallada UC-05 — Actualizar perfil
 
-**Identificador y nombre del caso de uso:** [Indica el caso.]
+**Identificador y nombre del caso de uso:** [Opción de usuario.]
 
-**Objetivo:** [Explica qué resultado pretende obtener el participante.]
+**Objetivo:** [Actualizar el perfil].
 
-**Participantes:** [Indica el actor principal y los actores de apoyo, si los hay.]
+**Participantes:** [Personal profesional y paciente].
 
-**Precondiciones:** [Indica qué se da por cumplido al comenzar. Las comprobaciones que realiza el sistema pertenecen al flujo.]
+**Precondiciones:** [El usuario dispone de cuenta activa]
 
-**Inicio:** [Indica qué acción o suceso inicia el caso.]
+**Inicio:** [Usuario solocita actualizar el perfil].
 
-**Escenario principal de éxito:** [Describe la secuencia entre los participantes y el sistema.]
+**Escenario principal de éxito:** [1: El responsable de la cuenta inicia el registro de sesión y el identificador de la cuenta. 2: El sistema aprueba el registro y muestra datos de la cuenta. 3:El responsable introduce el código para mostrar su análisis personal en formato pdf 4: El sistema debe comprobar el código 5: El sistema comprueba que no haya otra cuenta registrada con los mismos datos 6:El sistema compara los datos guardados con los exportados a pdf para que sean los mismos 7:El sistema muestra el resumen del registro y exige confirmación 8:El usurario solicita guardar los cambios. 9: El sistema comprueba los datos según las reglas del acta.].
 
-**Extensiones (flujos alternativos):** [Vincula cada variación a un paso. Indica cómo continúa o termina.]
+**Extensiones (flujos alternativos):** [5a: Falta un dato obligatorio o un dato no cumple su formato.
+                                        El usurario cancela antes de guardar.]
 
-**Postcondiciones:** [Indica qué queda establecido con éxito y qué se conserva o cambia si el caso termina sin éxito o se cancela. Una consulta no requiere modificar datos para alcanzar su objetivo.]
+**Postcondiciones:** [Con éxito: el contiene los cambios y el usuario recibe la confirmación.
+                      Sin éxito: los datos guardados no quedan sin modificar.]
 
 **Reglas y NFR pertinentes:** [Remite a los requisitos y actas que condicionan el comportamiento.]
 
@@ -245,25 +247,77 @@ Los apartados 6.1 y 6.2 corresponden a las descripciones detalladas de UC-05 y U
 
 ### 6.2 Descripción detallada UC-21 — Buscar recetas
 
-**Identificador y nombre del caso de uso:** [Indica el caso.]
+**Identificador y nombre del caso de uso:** UC-21 · Buscar recetas
 
-**Objetivo:** [Explica qué resultado pretende obtener el participante.]
+**Objetivo:** Permitir a una persona usuaria registrada localizar una receta publicada y validada que cumpla con los criterios indicados (texto, ingredientes incluidos y/o ingredientes excluidos) y consultar su detalle.
 
-**Participantes:** [Indica el actor principal y los actores de apoyo, si los hay.]
+**Participantes:**
+* **Actor principal:** Persona usuaria registrada.
+* **Actores de apoyo:** Sistema (Simbiosis).
 
-**Precondiciones:** [Indica qué se da por cumplido al comenzar. Las comprobaciones que realiza el sistema pertenecen al flujo.]
+**Precondiciones:**
+* La persona usuaria ha iniciado sesión en el sistema.
 
-**Inicio:** [Indica qué acción o suceso inicia el caso.]
+**Inicio:**
+* La persona usuaria solicita realizar una búsqueda de recetas o accede al apartado de búsqueda.
 
-**Escenario principal de éxito:** [Describe la secuencia entre los participantes y el sistema.]
+**Escenario principal de éxito:**
+1. El sistema solicita al menos un criterio de búsqueda (palabra/frase, ingredientes a incluir, ingredientes a excluir).
+2. La persona usuaria indica al menos un criterio de búsqueda (p. ej. selecciona ingredientes a incluir/excluir o introduce texto) y solicita la búsqueda.
+3. El sistema valida que los criterios son correctos y que no existen ingredientes en conflicto (un mismo ingrediente seleccionado para incluir y excluir a la vez).
+4. El sistema ejecuta la búsqueda sobre las recetas publicadas y validadas que cumplen todos los criterios introducidos.
+5. El sistema presenta el listado de resultados ordenado por fecha de publicación (las más recientes primero). Para cada receta muestra: título, imagen (o «Sin imagen»), calificación promedio (o «Sin valoraciones») y descripción breve.
+6. La persona usuaria selecciona una receta del listado de resultados para consultar su detalle.
+7. El sistema muestra la información detallada de la receta: título, imagen (si existe), ingredientes, instrucciones de preparación, tiempo de cocción, número de porciones, alias de quien la publicó e insignia de validación.
+8. El caso de uso finaliza con éxito.
 
-**Extensiones (flujos alternativos):** [Vincula cada variación a un paso. Indica cómo continúa o termina.]
+**Extensiones (flujos alternativos):**
 
-**Postcondiciones:** [Indica qué queda establecido con éxito y qué se conserva o cambia si el caso termina sin éxito o se cancela. Una consulta no requiere modificar datos para alcanzar su objetivo.]
+* **2a. La persona usuaria no indica ningún criterio de búsqueda:**
+  1. El sistema solicita un criterio y conserva la pantalla de búsqueda sin ejecutar la consulta.
+  2. El flujo vuelve al paso 2 del escenario principal.
 
-**Reglas y NFR pertinentes:** [Remite a los requisitos y actas que condicionan el comportamiento.]
+* **3a. Se detecta un conflicto en los criterios de búsqueda (un mismo ingrediente seleccionado para incluir y excluir):**
+  1. El sistema señala el conflicto a la persona usuaria y no ejecuta la búsqueda.
+  2. La persona usuaria corrige la selección.
+  3. El flujo vuelve al paso 3 del escenario principal (o la persona decide terminar la consulta).
 
-**Preguntas abiertas:** [Registra solo las cuestiones necesarias que las fuentes no resuelvan. Si no hay preguntas para el alcance descrito, indícalo.]
+* **4a. Búsqueda sin resultados (ninguna receta cumple los criterios):**
+  1. El sistema informa que no hay resultados para la búsqueda realizada y conserva los criterios introducidos.
+  2. Si el texto admite corrección ortográfica, el sistema propone la corrección. En su defecto, propone alternativas relacionadas si dispone de ellas (separadas de los resultados y conservando los ingredientes excluidos). Si no hay alternativas, el sistema lo indica.
+  3. La persona usuaria puede:
+     * **Opción A:** Aceptar una sugerencia/corrección propuesta. El sistema muestra los nuevos criterios propuestos para que la persona decida ejecutar la nueva búsqueda (vuelve al paso 3).
+     * **Opción B:** Modificar manualmente los criterios y ejecutar otra búsqueda (vuelve al paso 2).
+     * **Opción C:** Terminar la consulta (el caso de uso finaliza).
+
+* **4b / 7a. Fallo del sistema durante la consulta o la carga del detalle:**
+  1. El sistema informa del fallo/problema técnico (sin presentarlo como una búsqueda sin resultados) y conserva los criterios de la última búsqueda.
+  2. La persona usuaria decide reintentar la consulta (vuelve al paso 3 o 6 según corresponda) o terminar la consulta.
+
+* **7b. Volver a los resultados desde la vista de detalle:**
+  1. La persona usuaria solicita volver a la lista de resultados.
+  2. El sistema muestra de nuevo los resultados conservando los criterios y el orden de la última búsqueda realizada (vuelve al paso 5).
+
+**Postcondiciones:**
+* **Éxito:** La persona usuaria ha consultado los resultados o la información detallada de la receta seleccionada. Al ser un caso de uso de consulta, no se modifican datos del sistema.
+* **Cancelación / Finalización sin éxito:** Se conservan los criterios y el orden de la última búsqueda realizada para permitir posteriores reintentos o modificaciones por parte de la persona usuaria.
+
+**Reglas y NFR pertinentes:**
+* **Reglas de búsqueda:**
+  * Búsqueda por texto: Comprueba título y descripción breve; coincide palabra o frase exacta (seguida y en el mismo orden); es insensible a mayúsculas y tildes.
+  * Filtros: Una receta debe contener todos los ingredientes incluidos y ninguno de los excluidos.
+  * Combinación: Si se combinan texto e ingredientes, la receta debe cumplir simultáneamente todos los criterios.
+  * Alcance de datos: Solo se consultan y muestran recetas publicadas y validadas (no se muestran pendientes de validación). No se aplica automáticamente el filtro de alergias del perfil.
+  * Sugerencias: No se propone retirar ingredientes excluidos para sugerir alternativas.
+* **Requisitos asociados:**
+  * UR-08.
+  * FR-085, FR-086, FR-087, FR-089, FR-099, FR-102, FR-119.
+  * FR-056, FR-066, FR-192.
+  * Acta de acuerdos de UC-21 (Versión 1.1, 10/10/2026).
+  * Plan de E2 (Apartado 4.4).
+
+**Preguntas abiertas:**
+* No hay preguntas abiertas para el alcance descrito (las aclaraciones han sido resueltas y aprobadas en el acta de acuerdos vigente).
 
 ## 7 Continuidad entre iteraciones
 
